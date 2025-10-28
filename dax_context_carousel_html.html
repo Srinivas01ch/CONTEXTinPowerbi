@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DAX Context Carousel — Row vs Filter Context</title>
+  <style>
+    :root{
+      --pb-yellow:#F2C811;
+      --pb-dark:#2B2B2B;
+      --pb-blue:#0078D4;
+      --bg:#ffffff;
+      --card-radius:18px;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#fff 0%,#fbfbfb 100%);color:var(--pb-dark)}
+    .stage{max-width:900px;margin:30px auto;padding:18px;display:flex;gap:18px;align-items:center}
+    .carousel{position:relative;width:720px;height:480px;border-radius:var(--card-radius);box-shadow:0 10px 30px rgba(43,43,43,0.12);overflow:hidden;background:var(--bg);}
+    .slides{display:flex;height:100%;transition:transform .45s cubic-bezier(.2,.9,.2,1)}
+    .slide{min-width:100%;box-sizing:border-box;padding:34px 40px;display:flex;flex-direction:column;gap:18px}
+    h1,h2{margin:0}
+    h1{font-size:26px}
+    h2{font-size:20px;color:var(--pb-blue)}
+    .subtitle{color:#555;font-size:14px}
+    .row{display:flex;gap:16px;align-items:center}
+    .badge{background:var(--pb-yellow);padding:8px 12px;border-radius:10px;font-weight:700;color:var(--pb-dark)}
+    .code{background:#0f1724;color:#fff;padding:12px;border-radius:8px;font-family:Menlo,monospace;font-size:13px}
+    .pill{background:#f3f7fb;padding:10px;border-radius:10px;color:var(--pb-dark);font-weight:600}
+    .nav{position:absolute;inset:0;pointer-events:none}
+    .nav button{pointer-events:auto;position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.9);border:0;padding:14px;border-radius:12px;box-shadow:0 6px 14px rgba(0,0,0,0.12);cursor:pointer}
+    .nav button.prev{left:12px}
+    .nav button.next{right:12px}
+    .footer{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff}
+    .list{display:flex;flex-direction:column;gap:8px}
+    .mistake{display:flex;gap:10px;align-items:flex-start}
+    .cta{margin-top:8px;padding:10px 14px;border-radius:10px;background:var(--pb-blue);color:#fff;border:0;cursor:pointer}
+    .download{background:var(--pb-yellow);color:var(--pb-dark);font-weight:700;border:0;padding:10px 14px;border-radius:10px;cursor:pointer}
+    /* mobile */
+    @media (max-width:820px){.stage{flex-direction:column;align-items:center}.carousel{width:94%;height:420px}}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="carousel" id="carousel">
+      <div class="slides" id="slides">
+        <!-- Slide 1 -->
+        <section class="slide" data-slide="1">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;flex-direction:column">
+              <div class="badge">DAX MASTERCLASS</div>
+              <h1>If your DAX results don’t match your logic...</h1>
+              <p class="subtitle">You don’t have a syntax issue — you have a <strong>context</strong> issue.</p>
+            </div>
+            <div style="text-align:right">
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" style="opacity:.95"><rect x="0" y="0" width="24" height="24" rx="4" fill="var(--pb-yellow)"/><path d="M5 12h14M12 5v14" stroke="#2B2B2B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div style="margin-top:6px">
+            <p style="font-weight:700">Understanding Row vs Filter Context — the secret to mastering Power BI.</p>
+          </div>
+        </section>
+
+        <!-- Slide 2 -->
+        <section class="slide" data-slide="2" style="background:linear-gradient(180deg,#fff 0%,#fffbf0 100%)">
+          <div style="display:flex;justify-content:space-between;gap:16px">
+            <div style="flex:1">
+              <h2>🔹 Row Context = One Row at a Time</h2>
+              <p class="subtitle">Exists in calculated columns and iterators like <strong>SUMX</strong>, <strong>AVERAGEX</strong>.</p>
+              <div class="code">Profit = Sales[Amount] - Sales[Cost]</div>
+              <div style="margin-top:10px" class="pill">Think: "current row" pointer — Excel formula dragged down.</div>
+            </div>
+            <div style="width:220px;display:flex;align-items:center;justify-content:center">
+              <div style="width:180px;height:160px;border-radius:12px;background:#fff;border:1px solid #eee;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.04)">
+                <div style="font-size:13px;color:#666;text-align:center">Table preview<br><br><strong>Row highlighted</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 3 -->
+        <section class="slide" data-slide="3" style="background:linear-gradient(180deg,#fff 0%,#f3fbff 100%)">
+          <div style="display:flex;justify-content:space-between;gap:16px">
+            <div style="flex:1">
+              <h2>🔸 Filter Context = Which Rows Are Visible</h2>
+              <p class="subtitle">Defined by slicers, visuals, filters, and <strong>CALCULATE</strong>.</p>
+              <div class="code">Total Sales = SUM(Sales[Amount])</div>
+              <div style="margin-top:10px" class="pill">Think: Excel AutoFilter — visible rows only.</div>
+            </div>
+            <div style="width:220px;display:flex;align-items:center;justify-content:center">
+              <div style="width:200px;height:160px;border-radius:12px;background:#fff;border:1px solid #eee;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.04)">
+                <div style="font-size:13px;color:#666">Slicer applied<br><br><strong>Filtered rows</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 4 -->
+        <section class="slide" data-slide="4" style="background:linear-gradient(180deg,#fff 0%,#f7fff4 100%)">
+          <h2>⚙️ How They Interact</h2>
+          <p class="subtitle"><strong>CALCULATE()</strong> is the bridge — it converts Row Context into Filter Context.</p>
+          <div class="code">Sales per Product = CALCULATE(SUM(Sales[Amount]), Products[Category] = "Electronics")</div>
+          <div style="display:flex;gap:12px;margin-top:12px">
+            <div style="flex:1;padding:12px;background:#fff;border-radius:12px;border:1px solid #eee">Row Context ➡️ <strong>CALCULATE()</strong> ➡️ New Filter Context</div>
+            <div style="width:200px;padding:12px;background:#fff;border-radius:12px;border:1px solid #eee">Use when you need to apply the current row's value as a filter.</div>
+          </div>
+        </section>
+
+        <!-- Slide 5 -->
+        <section class="slide" data-slide="5" style="background:linear-gradient(180deg,#fff 0%,#fff7f7 100%)">
+          <h2>🚫 Common Mistakes</h2>
+          <div class="list">
+            <div class="mistake"><div style="width:10px;height:10px;border-radius:6px;background:var(--pb-yellow)"></div><div><strong>Using SUM() instead of SUMX()</strong> when row-by-row logic is needed.</div></div>
+            <div class="mistake"><div style="width:10px;height:10px;border-radius:6px;background:var(--pb-yellow)"></div><div><strong>Expecting row-level logic in a measure</strong> without creating row context.</div></div>
+            <div class="mistake"><div style="width:10px;height:10px;border-radius:6px;background:var(--pb-yellow)"></div><div><strong>Forgetting the context transition</strong> that CALCULATE performs.</div></div>
+            <div class="mistake"><div style="width:10px;height:10px;border-radius:6px;background:var(--pb-yellow)"></div><div><strong>Confusing visual filters vs DAX filters</strong> (they interact but are not the same).</div></div>
+          </div>
+        </section>
+
+        <!-- Slide 6 -->
+        <section class="slide" data-slide="6" style="background:linear-gradient(180deg,#fff 0%,#f6fbff 100%)">
+          <h2>🚀 The Developer's Edge</h2>
+          <p class="subtitle">Master Row + Filter Context and you control every calculation.</p>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="flex:1">
+              <p style="font-weight:700">Download the DAX Context Function Cheat Sheet for full list of functions and examples.</p>
+              <div style="margin-top:6px;display:flex;gap:10px">
+                <button class="download" id="downloadDoc">Download DOCX</button>
+                <button class="cta" id="exportSlide">Export Slide as PNG</button>
+              </div>
+            </div>
+            <div style="width:220px;text-align:center">
+              <div style="background:linear-gradient(90deg,var(--pb-blue),var(--pb-yellow));border-radius:12px;padding:14px;color:#fff">Power BI Developer</div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="nav">
+        <button class="prev" id="prev">◀</button>
+        <button class="next" id="next">▶</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const slidesEl = document.getElementById('slides');
+    const total = slidesEl.children.length;
+    let index = 0;
+    function show(i){
+      index = (i+total)%total;
+      slidesEl.style.transform = `translateX(-${index*100}%)`;
+    }
+    document.getElementById('next').addEventListener('click',()=>show(index+1));
+    document.getElementById('prev').addEventListener('click',()=>show(index-1));
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(index+1);if(e.key==='ArrowLeft')show(index-1)});
+
+    // Download DOCX link: replace with your hosted file URL if available
+    document.getElementById('downloadDoc').addEventListener('click',()=>{
+      // If you have the DOCX uploaded somewhere, set docUrl variable
+      const docUrl = '';
+      if(!docUrl){
+        alert('Please attach the DOCX file to your LinkedIn post or host the file and paste the URL into the HTML (docUrl variable).');
+        return;
+      }
+      window.open(docUrl,'_blank');
+    });
+
+    // Export slide as PNG using html2canvas (CDN)
+    document.getElementById('exportSlide').addEventListener('click',async()=>{
+      if(!window.html2canvas){
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        document.body.appendChild(s);
+        s.onload = ()=>capture();
+      } else capture();
+
+      function capture(){
+        const slide = slidesEl.children[index];
+        html2canvas(slide,{scale:2}).then(canvas=>{
+          const link = document.createElement('a');
+          link.href = canvas.toDataURL('image/png');
+          link.download = `slide-${index+1}.png`;
+          link.click();
+        });
+      }
+    });
+
+    // Start at first slide
+    show(0);
+  </script>
+</body>
+</html>
